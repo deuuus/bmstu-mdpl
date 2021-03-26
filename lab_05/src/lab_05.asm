@@ -102,6 +102,8 @@ MAIN:
 		MOV SI, DECR 
 		SUB CX, SI ;Обновление регистра-счетчика
 		INC DECR ;Очередная строка прочитана
+		ADD BX, 9h
+		SUB BL, COLS
 		LOOP INPUT_MTRX
 	
 	MOV DECR, 0 
@@ -118,21 +120,24 @@ MAIN:
 			INC BX
 			LOOP CHECK_ROW
 		CMP DI, MAX_NUM_OF_ODD ;Определение максимального количества нечетных элементов в строке
-		JNAE NOT_AE
+		JNA NOT_A
 		MOV MAX_NUM_OF_ODD, DI
 		MOV DI, DECR
 		MOV ROW_TO_DEL, DI ;Сохранение номера нужной строки
-		NOT_AE:
+		NOT_A:
 		MOV CL, ROWS
 		MOV SI, DECR
 		SUB CX, SI ;Обновление регистра-счетчика
 		INC DECR ;Очередная строка проанализирована
+		ADD BX, 9h
+		SUB BL, COLS
 		LOOP FIND_ROW
 		
-	MOV BL, COLS
+	MOV BX, ROW_TO_DEL
 	MOV AX, 1
 	MUL BX
-	MUL ROW_TO_DEL
+	MOV BX, 9
+	MUL BX
 	MOV BX, AX ;Установка регистра базы на начало удаляемой строки
 	
 	MOV DI, ROW_TO_DEL
@@ -144,9 +149,9 @@ MAIN:
 	DEL: ;Удаление строки с указанным свойством
 		MOV CL, COLS
 		SHIFT_ROW:
-			ADD BL, COLS
+			ADD BL, 9
 			MOV AH, MATRIX[BX]
-			SUB BL, COLS
+			SUB BL, 9
 			MOV MATRIX[BX], AH ;Реализация сдвига строки на одну позицию влево
 			INC BX
 			LOOP SHIFT_ROW
@@ -154,6 +159,8 @@ MAIN:
 		MOV SI, DECR
 		SUB CX, SI ;Обновление регистра-счетчика
 		INC DECR ;Очередная строка проанализирована
+		ADD BX, 9h
+		SUB BL, COLS
 		LOOP DEL
 		
 	SUB ROWS, 1 ;Строка удалена
@@ -181,6 +188,8 @@ MAIN:
 		MOV SI, DECR
 		SUB CX, SI
 		INC DECR
+		ADD BX, 9h
+		SUB BL, COLS
 		LOOP OUTPUT_MTRX
 		
 	MOV AX, 4C00h ;Завершение работы программы
