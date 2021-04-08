@@ -15,28 +15,29 @@ CSEG SEGMENT PARA PUBLIC 'CODE'
 
 PRINT_UD_NUM PROC NEAR
 
-	MOV SI, 1 ;Счетчик степени
-	MOV BX, 16 ;Счетчик цикла
-	MOV DI, 0 ;Переведенное число
+	MOV AX, 1 ;Счетчик степени
+	MOV DI, 16 ;Счетчик цикла
+	MOV BX, 0 ;Переведенное число
 	MOV CX, NUMBER
 	
 	CONVERT:
 		MOV DX, CX
 		AND DX, MASK2
 		
-		MOV AX, SI
-		MUL DL
-		ADD DI, AX
+		CMP DX, 0
+		JE IND
+
+		ADD BX, AX
 		
-		MOV AX, SI
+		IND:
+		
 		MOV DX, 2
 		MUL DX
-		MOV SI, AX
 		SHR CX, 1
-		DEC BX
+		DEC DI
 		JNZ CONVERT
 		
-	MOV AX, DI
+	MOV AX, BX
 	MOV CX, 10
 	MOV SI, 0
 	
@@ -54,8 +55,16 @@ PRINT_UD_NUM PROC NEAR
 	MOV AH, 09h
 	MOV DX, OFFSET CNV_MSG
 	INT 21h
-	MOV DX, OFFSET BUFFER
-	INT 21H
+	
+	MOV AH, 02h
+	DEC SI
+	
+	REVERT_PRINT:
+		MOV DL, BUFFER[SI]
+		INT 21h
+		DEC SI
+		CMP SI, -1
+		JNE REVERT_PRINT
 	
 	RET
 PRINT_UD_NUM ENDP
