@@ -8,12 +8,12 @@ SSEG SEGMENT PARA STACK 'STACK'
 SSEG ENDS
 
 DSEG SEGMENT PARA PUBLIC 'DATA'
-	MENU DB 13, 10, 13, 10, 'AVAILABLE ACTIONS:', 13, 10, 13, 10
-		DB '1) Enter signed number in binary notaion', 13, 10
-		DB '2) Print entered number in unsigned decimal notaion', 13, 10
-		DB '3) Print enetered number in signed hexdecimal notaion', 13, 10
-		DB '4) Exit', 13, 10, 13, 10
-		DB 'CHOOSE ACTION: $'
+	MENU DB 13, 10, 13, 10, "AVAILABLE ACTIONS:", 13, 10, 13, 10
+		DB "1) Enter signed number in binary notaion", 13, 10
+		DB "2) Print entered number in unsigned decimal notaion", 13, 10
+		DB "3) Print enetered number in signed hexdecimal notaion", 13, 10
+		DB "4) Exit", 13, 10, 13, 10
+		DB "CHOOSE ACTION: $"
 	ACTIONS DW READ_SB_NUM, PRINT_UD_NUM, PRINT_SH_NUM, EXIT_FUNC
 DSEG ENDS
 
