@@ -18,7 +18,7 @@ CSEG SEGMENT PARA PUBLIC 'CODE'
 CONVERT_TO_SH PROC NEAR
 
 	MOV DI, 4 ;Счетчик цикла
-	MOV SI, 0 ;Индексация буффера
+	XOR SI, SI ;Индексация буффера
 	MOV BX, NUMBER
 	
 	MOV AX, NUMBER ;Определение знака двоичного числа
@@ -26,8 +26,7 @@ CONVERT_TO_SH PROC NEAR
 	CMP AX, MASK_SIGN
 	JNE CONVERT
 	
-	DEC BX
-	NOT BX
+	NEG BX
 	
 	CONVERT:
 		MOV DX, BX
@@ -56,7 +55,7 @@ CONVERT_TO_SH ENDP
 CONVERT_TO_UD PROC NEAR
 	MOV AX, 1 ;Счетчик степени
 	MOV DI, 16 ;Счетчик цикла
-	MOV BX, 0 ;Переведенное число
+	XOR BX, BX ;Переведенное число
 	MOV CX, NUMBER
 	
 	CONVERT:
@@ -70,15 +69,14 @@ CONVERT_TO_UD PROC NEAR
 		
 		INDEX:
 		
-		MOV DX, 2
-		MUL DX
+		SHL AX, 1
 		SHR CX, 1
 		DEC DI
 		JNZ CONVERT
 		
 	MOV AX, BX
 	MOV CX, 10 ;Делитель для получения последней цифры
-	MOV SI, 0
+	XOR SI, SI
 	
 	DIGIT_TO_SYMB:
 		XOR DX, DX
