@@ -9,7 +9,7 @@ DSEG SEGMENT PARA PUBLIC 'DATA'
 	MASK2 DW 1
 	MASK16 DW 15
 	MASK_SIGN DW 32768
-	BUFFER DB 20 DUP('0')
+	BUFFER DB 20 DUP('$')
 DSEG ENDS
 
 CSEG SEGMENT PARA PUBLIC 'CODE'
@@ -21,7 +21,7 @@ CONVERT_TO_SH PROC NEAR
 	MOV SI, 0 ;Индексация буффера
 	MOV BX, NUMBER
 	
-	MOV AX, NUMBER
+	MOV AX, NUMBER ;Определение знака двоичного числа
 	AND AX, MASK_SIGN
 	CMP AX, MASK_SIGN
 	JNE CONVERT
@@ -41,7 +41,7 @@ CONVERT_TO_SH PROC NEAR
 		IS_DIGIT:
 		ADD DL, '0'
 		MOV BUFFER[SI], DL
-		MOV CL, 4
+		MOV CL, 4 ;Перевод осуществляется по тетрадам - 4 бита
 		SHR BX, CL
 		INC SI
 		DEC DI
@@ -77,17 +77,17 @@ CONVERT_TO_UD PROC NEAR
 		JNZ CONVERT
 		
 	MOV AX, BX
-	MOV CX, 10
+	MOV CX, 10 ;Делитель для получения последней цифры
 	MOV SI, 0
 	
 	DIGIT_TO_SYMB:
 		XOR DX, DX
 		DIV CX
-		XCHG AX, DX
+		XCHG AX, DX ;Получаем остаток от деления на 10 в AX
 		ADD AL, '0'
 		MOV BUFFER[SI], AL
 		INC SI
-		XCHG AX, DX
+		XCHG AX, DX ;Меняем обратно частное и остаток
 		OR AX, AX
 		JNE DIGIT_TO_SYMB
 		
