@@ -1,15 +1,14 @@
 .MODEL TINY
+.CODE
 .386
 
-SG SEGMENT
-	ASSUME CS:SG, DS:SG
-	ORG 100h 
+ORG 100h 
 
 MAIN:
-	TIME DB 0
-	MOV AH, 02h
+    TIME DB 0
+    MOV AH, 02h
     INT 1Ah
-	MOV TIME, DH
+    MOV TIME, DH
 	
     SPEED DB 01Fh
     OLD_08H DD ?
@@ -19,9 +18,9 @@ MAIN:
 
 INT_08h_HANDLER PROC NEAR
     PUSHA
-	PUSHF
-	PUSH ES
-	PUSH DS
+    PUSHF
+    PUSH ES
+    PUSH DS
 
     MOV AH, 02h
     INT 1Ah ;Считать время из постоянных часов реального времени. Секунды будут в DH
@@ -41,9 +40,9 @@ INT_08h_HANDLER PROC NEAR
 
     QUIT:
         POP DS
-		POP ES
-		POPF
-		POPA
+	POP ES
+	POPF
+	POPA
 
         JMP CS:OLD_08H
 INT_08h_HANDLER ENDP
@@ -66,27 +65,21 @@ INIT:
     INT 27H ;Резидентное завершение 
 
 UNINSTALL:
-    PUSHA
-	PUSHF
-	PUSH ES
-	PUSH DS
+    PUSH ES
+    PUSH DS
 
-	;Установка старого вектора прерывания
+    ;Установка старого вектора прерывания
     MOV DX, WORD PTR ES:OLD_08H
     MOV DS, WORD PTR ES:OLD_08H + 2
     MOV AX, 2508h 
     INT 21H
   
     POP DS
-	POP ES
-	POPF
-	POPA
-    
+    POP ES
     MOV AH, 49h ;Освобождение распределенного блока памяти
     INT 21h
 
     MOV AX, 4C00h ;Завершение программы
     INT 21h
-	
-SG ENDS
+    
 END MAIN
